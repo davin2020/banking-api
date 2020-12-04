@@ -10,7 +10,7 @@ const port = 3008;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-//helpful to delete stuff by ID
+//helpful to delete or get stuff by ID
 const ObjectId = require('mongodb').ObjectId;
 
 //where db is that we are going ot use, protocol = mongodb
@@ -22,8 +22,36 @@ const bankingData = [
     {name: 'Dutch', address: 'Lucy', balance: '700'}
 ]
 
+//GIT WIP branch - do i need to git add package-lock.json file??
 
 // CALLBACKS
+
+//FUNCTIONS
+
+
+// FUNCTIONS
+//this now works with ID for 1 user account
+let updateMoney = (db, accountID, amount) => {
+    let collection = db.collection('accounts');
+    //find current balance for current user, increase it by x amount
+    let currentBalance = getAccountByID(accountID, db, (documentsReturned) => {
+        console.log(`found some records inside addMoney: amt to update ${amount}`);
+        console.log(`id: ${accountID}`);
+        collection.updateOne({_id: accountID}, {
+            //increment feature to increase value of exsting field
+            $inc: {
+                balance: amount
+            }
+        });
+    })
+}
+
+let insertNewAccount = (db, dataToSend) => {
+    let collection = db.collection('accounts');
+    console.log(`found insertNewAccount `);
+    collection.insertOne(dataToSend); //no need for any options here, mongodb will just store json for us
+}
+
 
 //this func is used for retrieving all records from the people collection
 //first param is teh db itself
@@ -40,19 +68,6 @@ let getAllAccounts = (db, callback) => {
     })
 }
 
-//how to pass in the id here?? - just added it to func params for now
-//Requirement - Get specific account by ID - currently done by Name
-// let getAccountByName = (name, db, callback) => {
-//     //setup collection
-//     let collection = db.collection('accounts');
-//     // now can query stuff
-//     collection.find({name: name}).toArray((error, docs) => {
-//         console.log(`Found One Account ${name} `);
-//         //we then run the provied callback, passimg it the results, so thety can be sent to the user
-//         callback(docs); // this callback function be defined later
-//     })
-// }
-
 let getAccountByID = (id, db, callback) => {
     //setup collection
     let collection = db.collection('accounts');
@@ -64,10 +79,10 @@ let getAccountByID = (id, db, callback) => {
     })
 }
 
+
+//ROUTES
+
 //Requirement use PUT - add money to account ie increase value of balance field
-
-
-
 //Requirement use PUT - withdraw money from account ie reduce value of balance field
 
 //Requirement use PUT - transfer money from one user to another ie adjust value of balance fields by same amount across 2 differnt  user accounts
@@ -95,7 +110,7 @@ app.put('/accounts', async (request, response) => {
 })
 
 
-//Requirement - use POST - add/crerate new account, w name, address, balance 0 as default
+//Requirement - use POST - add/create new account, w name, address, balance 0 as default
 app.post('/accounts', (request, response) => {
     //fyi if some properties are nto provided, a new account ist  still created
     let newAccountName = request.body.name;
@@ -125,35 +140,6 @@ app.get('/', (request, response) => {
     response.send('Hello banking Root');
 })
 
-//this now works with ID for 1 user account
-let updateMoney = (db, accountID, amount) => {
-    let collection = db.collection('accounts');
-    //find current balance for current user, increase it by x amount
-    let currentBalance = getAccountByID(accountID, db, (documentsReturned) => {
-        console.log(`found some records inside addMoney: amt to update ${amount}`);
-        console.log(`id: ${accountID}`);
-        collection.updateOne({_id: accountID}, {
-        //increment feature to increase value of exsting field
-            $inc: {
-                balance: amount
-            }
-        });
-    })
-}
-
-let insertNewAccount = (db, dataToSend) => {
-    let collection = db.collection('accounts');
-    console.log(`found insertNewAccount `);
-    collection.insertOne(dataToSend); //no need for any options here, mongodb will just store json for us
-    // collection.insertOne({_id: accountID}, {
-    //     }, {$set: {
-    //         name: dataToSend.name,
-    //         address: dataToSend.address,
-    //         balance: dataToSend.balance
-    //     }});
-
-}
-
 //put to update balance by x amount - should params go in url or POST BODY! - PB as QP are for sorting or filtering
 //this can be  used to both add or withdraw money, if using negative value
 // app.put('/accounts/:id/:amount', async (request, response) => {
@@ -176,17 +162,14 @@ app.put('/accounts/:id', async (request, response) => {
 })
 
 
-// MONGO DB STUFF
 app.get('/accounts', async (request, response) => {
     MongoClient.connect(url, {
         useNewUrlParser: true,
         useUnifiedTopology: true
     }, (error, client) => {
         console.log('connected to mongo DB');
-
         //instead of respnding with text ok, can now respond with result of query ie json
         // response.send('Accounts');
-
         let db = client.db('bank'); //name of DB in mongo
         getAllAccounts(db, (documentsReturned) => {
             console.log('found some records:');
@@ -197,7 +180,6 @@ app.get('/accounts', async (request, response) => {
     })
 })
 
-//GIT WIP branch - do i need to git add package-lock.json file??
 
 app.get('/accounts/:id', async (request, response) => {
     // console.log('blah');
@@ -218,27 +200,6 @@ app.get('/accounts/:id', async (request, response) => {
         })
     })
 })
-
-//orignal one by name
-// app.get('/accounts/:name', async (request, response) => {
-//     // console.log('blah');
-//     MongoClient.connect(url, {
-//         useNewUrlParser: true,
-//         useUnifiedTopology: true
-//     }, (error, client) => {
-//         let name = request.params.name;
-//         console.log(`connected to mongo DB for query with Name: ${request.params.name}`);
-//         // now get details for just one account - this needs to be inside the callback block otherwise it doestn know what client.db() is!
-//         let db = client.db('bank');
-//         //if account not found, would be nice to show error msg, dont worry about case for Name
-//         getAccountByName(name, db, (documentsReturned) => {
-//             console.log('found some records:');
-//             console.log(documentsReturned);
-//             response.json(documentsReturned);
-//         })
-//     })
-// })
-
 
 app.listen(port, () => {
     console.log(`Banking API listening on port http://localhost:${port}`);
