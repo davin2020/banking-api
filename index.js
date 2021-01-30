@@ -1,7 +1,8 @@
 const expressPkg = require('express'); //import the express pkg
 const MongoClient = require('mongodb').MongoClient;
 //need body parser for POST requests
-const bodyParser = require('body-parser');
+const bodyParser = require('body-parser'); //RM
+const cors = require('cors');
 
 const app = expressPkg();
 const port = 3008;
@@ -9,12 +10,14 @@ const port = 3008;
 //need body parser for POST requests
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
+app.use(cors());
 
 //helpful to delete or get stuff by ID
 const ObjectId = require('mongodb').ObjectId;
 
 //where db is that we are going ot use, protocol = mongodb
-const url = "mongodb://root:password@localhost:27017"; //default port
+// const url = "mongodb://root:password@localhost:27017"; //default port & login for mayden mac
+const url = "mongodb://localhost:27017"; //default port & login for win10 laptop
 
 const bankingData = [
     {name: 'Turin', address: 'RAC', balance: '-100'},
@@ -35,7 +38,7 @@ let updateMoney = (db, accountID, amount) => {
     let collection = db.collection('accounts');
     //find current balance for current user, increase it by x amount
     let currentBalance = getAccountByID(accountID, db, (documentsReturned) => {
-        console.log(`found some records inside addMoney: amt to update ${amount}`);
+        console.log(`found some records inside updateMoney: amt to update ${amount}`);
         console.log(`id: ${accountID}`);
         collection.updateOne({_id: accountID}, {
             //increment feature to increase value of exsting field
@@ -43,6 +46,7 @@ let updateMoney = (db, accountID, amount) => {
                 balance: amount
             }
         });
+        console.log(`updateMoney: updated balance by amount`);
     })
 }
 
@@ -57,6 +61,7 @@ let insertNewAccount = (db, dataToSend) => {
 //first param is teh db itself
 //second param is a callback torun after the query has completed
 //Requirement - Get all Accounts
+    //added to controller file ok - needs to be in SERVICES file instead!!
 let getAllAccounts = (db, callback) => {
     //setup collection
     let collection = db.collection('accounts');
@@ -90,8 +95,10 @@ let getAccountByID = (id, db, callback) => {
 //can use 2x url placeholders , with amt in body
 app.put('/accounts', async (request, response) => {
     // let id = ObjectId(request.params.id);
-    const accountIDFrom = request.body.idFrom;  //best to get from body or params?
-    const accountIDTo = request.body.idTo;
+    // need to get obj id!
+    // let accountID = ObjectId(request.params.id);
+    const accountIDFrom = ObjectId(request.body.idFrom);  //best to get from body or params?
+    const accountIDTo = ObjectId(request.body.idTo);
     const amount = parseFloat(request.body.amount);
 
     console.log(request.body);
@@ -99,10 +106,12 @@ app.put('/accounts', async (request, response) => {
         useNewUrlParser: true,
         useUnifiedTopology: true
     }, (error, client) => {
-        console.log('connected to mongo for PUT');
+        console.log('connected to mongo for PUT as part of TRF');
         let db = client.db('bank');
 
         //if amt is 100, from is -100, and to is +100
+        //chage this to updateMoneyTransfer(),which calls these 2
+        // 30jan is negative sign causing an issue? try parseFloat() ?
         updateMoney(db, accountIDFrom, -amount);
         updateMoney(db, accountIDTo, amount);
     })
@@ -147,6 +156,7 @@ app.put('/accounts/:id', async (request, response) => {
     // const accountID = request.body.id;
     const amount = parseFloat(request.body.amount);
     let accountID = ObjectId(request.params.id);
+    console.log(`value of amount: ${amount}`);
 
     console.log(request.body);
     MongoClient.connect(url, {
@@ -161,7 +171,7 @@ app.put('/accounts/:id', async (request, response) => {
     response.json({message: `Updated balance using PUT to update money ${amount}  for id ${accountID} `});
 })
 
-
+//this is the code that shoudl be  in teh CONTROLLER!
 app.get('/accounts', async (request, response) => {
     MongoClient.connect(url, {
         useNewUrlParser: true,
