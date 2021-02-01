@@ -2,11 +2,52 @@
 RESTful Banking API with Killjoys Characters as Customers
 
 ## To Install
-- clone repo locally & cd to directory
-- run `npm install`
-- create local MongoDB database called `bank`
-- create collection called `accounts` & import data from file `accounts.json`
-- if your local db needs a username & password, add them to file index.js on line xxx
-- run `nodemon index.js`
-- navigate to `localhost:3008` in browser to test its running
-- use Postman or similar to submit requests
+1. clone repo locally & cd to directory
+2. run `npm install`
+3. create local MongoDB database called `bank`
+4. create collection called `accounts` & import data from file `accounts.json`
+5. if your local db needs a username & password, add them to file index.js on line xxx
+6. run `nodemon index.js`
+7. navigate to `localhost:3008` in browser to test its running
+8. use Postman or similar to submit requests
+
+## API Feature/Routes
+- Create new account (should have a name, address and balance)
+- Add money to an account
+- Wthdraw money from an account 
+- Transfer money from one account to another
+- Get all accounts
+- Get specific account by ID 
+
+### Scenarios & Examples
+Dutch and  brothers Johnny & Davin, are a trio of bounty hunters in the Quad solar system. On the planet Westerley, Pree runs a bar called The Royale in Old Town. Turin manages The RAC, where the trio work and sends them off on bounty hunting missions
+
+- Davin is new to the team and needs to open an account, and add 80 credits in cash
+
+- Johnny lost a wager to Davin, he checks his balance and transfers 20 credits to Davin
+
+- Dutch needs some info from a local monk and withdraws 50 in cash to donate to his cause
+
+- Its the end of the month. Turin has to pay their salary according to their level at the RAC.
+Turin pays Dutch 1000 credits, Johnny 600 and Davin 800
+
+- The trio meetup at the Royale and its Dutch's round. She pays Pree 25 credits for drinks & snacks
+
+- Their arch nemesis hacks into the bank and checks out everyones balance 
+
+EG ROUTES from Aptitude Test
+
+**/question**
+
+GET
+- Get all questions and options.
+- Optional `test_id` query parameter to specify which test to return questions for
+    - If not provided, will default to test id 1
+- Returns all questions and question options for given test.
+
+POST
+- Create new question.
+- `{"text":"Question example", "option1":"Answer 1", "option2":"Answer 2", "option3":"Answer 3", "option4":"Answer 
+4", "option5":"Answer 4", "answer":"2", "test_id":"2"}`
+    - `test_id` is optional, will default to test id 1
+- Returns id of question created.
