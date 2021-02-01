@@ -37,17 +37,33 @@ Turin pays Dutch 1000 credits, Johnny 600 and Davin 800
 
 EG ROUTES from Aptitude Test
 
-**/question**
+**/accounts/:id**
 
 GET
-- Get all questions and options.
-- Optional `test_id` query parameter to specify which test to return questions for
-    - If not provided, will default to test id 1
-- Returns all questions and question options for given test.
+- Gets specific account by ID
+- `/accounts/5fca5c91f1c7152ec5d3023d`
+- Returns _id, name, address & balance of account
+ `{
+        "_id": "5fca5c91f1c7152ec5d3023d",
+        "name": "Dutch",
+        "address": "Lucy the  Spaceship",
+        "balance": 970
+    }`
+    
+**/accounts**
+
+GET
+- Gets all accounts
 
 POST
-- Create new question.
-- `{"text":"Question example", "option1":"Answer 1", "option2":"Answer 2", "option3":"Answer 3", "option4":"Answer 
-4", "option5":"Answer 4", "answer":"2", "test_id":"2"}`
-    - `test_id` is optional, will default to test id 1
-- Returns id of question created.
+- Create new account
+- `{"name":"Pree", "address":"The Royale", "balance":5000 }`
+
+PUT
+- Transfer money from one account to another
+- Post Body  `{"amount":100, "idFrom":"5fca5c28bdd52a2ea127f318", "idTo":"5fca5c01bdd52a2ea127f317" }`
+- Returns message - `{
+    "message": "Updated balance using PUT to update money 100  for accountIDFrom 5fca5c28bdd52a2ea127f318  to accountIDTo 5fca5c01bdd52a2ea127f317 "
+}`
+
+
