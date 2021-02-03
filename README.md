@@ -49,7 +49,15 @@ GET
         "address": "Lucy the  Spaceship",
         "balance": 970
     }`
-    
+  
+
+PUT
+- Credits or debits money to the account specified
+- Use a positive amount for a credit or a negative amount for a debit
+- Sends: `{"amount":100 }`
+- Returns: `{message: "Updated balance using PUT to update money 100  for id 5fca5c91f1c7152ec5d3023d"}`
+
+
 **/accounts**
 
 GET
@@ -57,13 +65,15 @@ GET
 
 POST
 - Create new account
-- `{"name":"Pree", "address":"The Royale", "balance":5000 }`
+- Sends:`{"name":"Pree", "address":"The Royale", "balance":5000 }`
 
 PUT
 - Transfer money from one account to another
-- Post Body  `{"amount":100, "idFrom":"5fca5c28bdd52a2ea127f318", "idTo":"5fca5c01bdd52a2ea127f317" }`
+- Sends via Post Body:  `{"amount":100, "idFrom":"5fca5c28bdd52a2ea127f318", "idTo":"5fca5c01bdd52a2ea127f317" }`
 - Returns message - `{
     "message": "Updated balance using PUT to update money 100  for accountIDFrom 5fca5c28bdd52a2ea127f318  to accountIDTo 5fca5c01bdd52a2ea127f317 "
 }`
+
+
 
 
