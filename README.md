@@ -37,7 +37,7 @@ Turin pays Dutch 1000 credits, Johnny 600 and Davin 800
 
 EG ROUTES from Aptitude Test
 
-**/accounts/:id**
+**/accounts/{id}**
 
 GET
 - Gets specific account by ID
@@ -61,7 +61,9 @@ PUT
 **/accounts**
 
 GET
-- Gets all accounts
+- Gets all accounts 
+- No request data
+- Returns array of accounts, with  _id, name, address & balance 
 
 POST
 - Create new account
