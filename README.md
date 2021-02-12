@@ -68,6 +68,7 @@ GET
 POST
 - Create new account
 - Sends:`{"name":"Pree", "address":"The Royale", "balance":5000 }`
+- Returns message when new account is created: `{"message": "inserted new account for: Turin" }`
 
 PUT
 - Transfer money from one account to another
