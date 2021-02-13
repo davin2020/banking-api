@@ -63,15 +63,15 @@ PUT
 GET
 - Gets all accounts 
 - No request data
-- Returns array of accounts, with  _id, name, address & balance 
+- Returns array of accounts, with _id, name, address & balance: `[{"_id": "5fca5c28bdd52a2ea127f318", "name": "Turin", "address": "The R.A.C.", "balance": 4700},{"_id": "5fca5c91f1c7152ec5d3023d", "name": "Dutch","address": "Lucy the  Spaceship", "balance": 970}]` 
 
 POST
 - Create new account
-- Sends:`{"name":"Pree", "address":"The Royale", "balance":5000 }`
-- Returns message when new account is created: `{"message": "inserted new account for: Turin" }`
+- Sends name, address & balanace details needed to create a new account :`{"name":"Pree", "address":"The Royale", "balance":5000 }`
+- Returns message when new account is created ??: `{"message": "inserted new account for: Turin" }`
 
 PUT
-- Transfer money from one account to another
+- Transfers money from one account to another
 - Sends via Post Body:  `{"amount":100, "idFrom":"5fca5c28bdd52a2ea127f318", "idTo":"5fca5c01bdd52a2ea127f317" }`
 - Returns message - `{
     "message": "Updated balance using PUT to update money 100  for accountIDFrom 5fca5c28bdd52a2ea127f318  to accountIDTo 5fca5c01bdd52a2ea127f317 "
