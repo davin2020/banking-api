@@ -19,10 +19,12 @@ const ObjectId = require('mongodb').ObjectId;
 // const url = "mongodb://root:password@localhost:27017"; //default port & login for mayden mac
 const url = "mongodb://localhost:27017"; //default port & login for win10 laptop
 
+// 13feb2021 need to save fulname to mongo db
+//what about putting mongo db in cloud??
 const bankingData = [
-    {name: 'Turin', address: 'RAC', balance: '-100'},
-    {name: 'Pree', address: 'The Royal, Westerley', balance: '23100'},
-    {name: 'Dutch', address: 'Lucy', balance: '700'}
+    {nickname: 'Turin', fullname: 'Alfred Olyevich Turin', location: 'RAC', balance: '-100'},
+    {nickname: 'Pree', fullname: 'Prima Dezz', location: 'The Royal, Westerley', balance: '23100'},
+    {nickname: 'Dutch', fullname: 'Yalena Yardeen', location: 'Lucy', balance: '700'}
 ]
 
 //GIT WIP branch - do i need to git add package-lock.json file??
@@ -119,15 +121,15 @@ app.put('/accounts', async (request, response) => {
 })
 
 
-//Requirement - use POST - add/create new account, w name, address, balance 0 as default
+//Requirement - use POST - add/create new account, w nickname, location, balance 0 as default
 app.post('/accounts', (request, response) => {
     //fyi if some properties are nto provided, a new account ist  still created
-    let newAccountName = request.body.name;
-    let newAccountAddress = request.body.address;
+    let newAccountNickname = request.body.nickname;
+    let newAccountLocation = request.body.location;
     let newAccountBalance = request.body.balance;
     let dataToSend = {
-        name: newAccountName,
-        address: newAccountAddress,
+        nickname: newAccountNickname,
+        location: newAccountLocation,
         balance: newAccountBalance
     }
     MongoClient.connect(url, {
@@ -139,7 +141,7 @@ app.post('/accounts', (request, response) => {
         //forgot to add this line - this does the actual insertion!
         insertNewAccount(db, dataToSend);
     });
-    response.json({message: `inserted new account for: ${newAccountName}`});
+    response.json({message: `inserted new account for: ${newAccountNickname}`});
     // response.send('inserted!');
 
 });
@@ -180,7 +182,7 @@ app.get('/accounts', async (request, response) => {
         console.log('connected to mongo DB');
         //instead of respnding with text ok, can now respond with result of query ie json
         // response.send('Accounts');
-        let db = client.db('bank'); //name of DB in mongo
+        let db = client.db('banking'); //name of DB in mongo
         getAllAccounts(db, (documentsReturned) => {
             console.log('found some records:');
             console.log(documentsReturned);
