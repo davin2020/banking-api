@@ -66,9 +66,9 @@ GET
 - Returns array of accounts, with _id, name, address & balance: `[{"_id": "5fca5c28bdd52a2ea127f318", "name": "Turin", "address": "The R.A.C.", "balance": 4700},{"_id": "5fca5c91f1c7152ec5d3023d", "name": "Dutch","address": "Lucy the  Spaceship", "balance": 970}]` 
 
 POST
-- Create new account
-- Sends name, address & balanace details needed to create a new account :`{"name":"Pree", "address":"The Royale", "balance":5000 }`
-- Returns message when new account is created ??: `{"message": "inserted new account for: Turin" }`
+- Create new account. EG Davin is the newest member of the team so  needs to create an account & pay in 50 joy 
+- Sends fullname, nickname, location & balanace details needed to create a new account :`{"fullname":"Davin Jaqobis", "nickname":"Davin", "location":"Onboard Lucy the Spaceship", "balance":50 }`
+- Returns message when new account is created: `{"message": "Created new account for: Davin" }`
 
 PUT
 - Transfers money from one account to another
