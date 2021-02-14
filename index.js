@@ -19,8 +19,10 @@ const ObjectId = require('mongodb').ObjectId;
 // const url = "mongodb://root:password@localhost:27017"; //default port & login for mayden mac
 const url = "mongodb://localhost:27017"; //default port & login for win10 laptop
 
-// 13feb2021 need to save fulname to mongo db
-//what about putting mongo db in cloud??
+// todo - 13feb2021 need to save fulname data to mongo db & adjust saving of nickname data
+// todo - what about putting mongo db in cloud?? so wehn i make demo deployable version it will work ok, btut that woul make install instructions different
+// todo - test by creating new accounts eg Pree or Gared
+
 const bankingData = [
     {nickname: 'Turin', fullname: 'Alfred Olyevich Turin', location: 'RAC', balance: '-100'},
     {nickname: 'Pree', fullname: 'Prima Dezz', location: 'The Royal, Westerley', balance: '23100'},
@@ -109,7 +111,8 @@ app.put('/accounts', async (request, response) => {
         useUnifiedTopology: true
     }, (error, client) => {
         console.log('connected to mongo for PUT as part of TRF');
-        let db = client.db('bank');
+        // todo - need to abstract this db client name
+        let db = client.db('banking');
 
         //if amt is 100, from is -100, and to is +100
         //chage this to updateMoneyTransfer(),which calls these 2
@@ -124,10 +127,12 @@ app.put('/accounts', async (request, response) => {
 //Requirement - use POST - add/create new account, w nickname, location, balance 0 as default
 app.post('/accounts', (request, response) => {
     //fyi if some properties are nto provided, a new account ist  still created
+    let newAccountFullname = request.body.fullname;
     let newAccountNickname = request.body.nickname;
     let newAccountLocation = request.body.location;
     let newAccountBalance = request.body.balance;
     let dataToSend = {
+        fullname: newAccountFullname,
         nickname: newAccountNickname,
         location: newAccountLocation,
         balance: newAccountBalance
@@ -137,11 +142,14 @@ app.post('/accounts', (request, response) => {
         useUnifiedTopology: true
     }, (error, client) => {
         console.log('connected to mongo DB for POST request');
-        let db = client.db('bank');
+        let db = client.db('banking');
         //forgot to add this line - this does the actual insertion!
+        // todo - nothing is actuallly inserted!!
+        // need to check for error condition and respond w error msg
         insertNewAccount(db, dataToSend);
+        console.log(`any error: ${error}`);
     });
-    response.json({message: `inserted new account for: ${newAccountNickname}`});
+    response.json({message: `Created new account for: ${newAccountNickname}`});
     // response.send('inserted!');
 
 });
@@ -166,7 +174,7 @@ app.put('/accounts/:id', async (request, response) => {
         useUnifiedTopology: true
     }, (error, client) => {
         console.log('connected to mongo for PUT');
-        let db = client.db('bank');
+        let db = client.db('banking');
         updateMoney(db, accountID, amount);
     })
 
@@ -203,7 +211,7 @@ app.get('/accounts/:id', async (request, response) => {
 
         console.log(`connected to mongo DB for query with ID: ${request.params.id}`);
         // now get details for just one account - this needs to be inside the callback block otherwise it doestn know what client.db() is!
-        let db = client.db('bank');
+        let db = client.db('banking');
         //if account not found, would be nice to show error msg, dont worry about case for Name
         getAccountByID(accountID, db, (documentsReturned) => {
             console.log(`found some records by GET and id: ${accountID}`);
