@@ -1,35 +1,34 @@
 const expressPkg = require('express'); //import the express pkg
 const MongoClient = require('mongodb').MongoClient;
-//need body parser for POST requests
 const bodyParser = require('body-parser'); //RM
 const cors = require('cors');
 
 const app = expressPkg();
 const port = 3008;
 
-//need body parser for POST requests
+//need bodyParser for POST requests
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cors());
 
-//helpful to delete or get stuff by ID
+//helpful to get objects by ID, or delete them
 const ObjectId = require('mongodb').ObjectId;
 
-//where db is that we are going ot use, protocol = mongodb
-// const url = "mongodb://root:password@localhost:27017"; //default port & login for mayden mac
-const url = "mongodb://localhost:27017"; //default port & login for win10 laptop
+//Location of DB that we are going to use (connection protocol = mongodb)
+// const url = "mongodb://root:password@localhost:27017"; //default port & login for Macs
+const url = "mongodb://localhost:27017"; //default port & login for Windows10
 
+// todo - 13feb2021 what about putting mongo db in cloud?? so when i make demo deployable version it will work ok, but that would make install instructions different
+
+//example data structure, before using external MongoDB
 const bankingData = [
-    {name: 'Turin', address: 'RAC', balance: '-100'},
-    {name: 'Pree', address: 'The Royal, Westerley', balance: '23100'},
-    {name: 'Dutch', address: 'Lucy', balance: '700'}
+    {nickname: 'Turin', fullname: 'Alfred Olyevich Turin', location: 'RAC', balance: '23000'},
+    {nickname: 'Pree', fullname: 'Johnny Andras Jaqobis', location: 'Lucy', balance: '7100'},
+    {nickname: 'Dutch', fullname: 'Yalena Yardeen', location: 'Lucy', balance: '1200'}
 ]
 
-//GIT WIP branch - do i need to git add package-lock.json file??
-
+// TODO refactor code in this index file into separate callbacks & functions
 // CALLBACKS
-
-//FUNCTIONS
 
 
 // FUNCTIONS
@@ -55,7 +54,6 @@ let insertNewAccount = (db, dataToSend) => {
     console.log(`found insertNewAccount `);
     collection.insertOne(dataToSend); //no need for any options here, mongodb will just store json for us
 }
-
 
 //this func is used for retrieving all records from the people collection
 //first param is teh db itself
@@ -107,7 +105,8 @@ app.put('/accounts', async (request, response) => {
         useUnifiedTopology: true
     }, (error, client) => {
         console.log('connected to mongo for PUT as part of TRF');
-        let db = client.db('bank');
+        // todo - need to abstract this db client name
+        let db = client.db('banking');
 
         //if amt is 100, from is -100, and to is +100
         //chage this to updateMoneyTransfer(),which calls these 2
@@ -118,16 +117,17 @@ app.put('/accounts', async (request, response) => {
     response.json({message: `Updated balance using PUT to update money ${amount}  for accountIDFrom ${accountIDFrom}  to accountIDTo ${accountIDTo} `});
 })
 
-
-//Requirement - use POST - add/create new account, w name, address, balance 0 as default
+//Requirement - use POST - add/create new account, w nickname, location, balance 0 as default
 app.post('/accounts', (request, response) => {
     //fyi if some properties are nto provided, a new account ist  still created
-    let newAccountName = request.body.name;
-    let newAccountAddress = request.body.address;
+    let newAccountFullname = request.body.fullname;
+    let newAccountNickname = request.body.nickname;
+    let newAccountLocation = request.body.location;
     let newAccountBalance = request.body.balance;
     let dataToSend = {
-        name: newAccountName,
-        address: newAccountAddress,
+        fullname: newAccountFullname,
+        nickname: newAccountNickname,
+        location: newAccountLocation,
         balance: newAccountBalance
     }
     MongoClient.connect(url, {
@@ -135,18 +135,21 @@ app.post('/accounts', (request, response) => {
         useUnifiedTopology: true
     }, (error, client) => {
         console.log('connected to mongo DB for POST request');
-        let db = client.db('bank');
+        let db = client.db('banking');
         //forgot to add this line - this does the actual insertion!
+        // todo - nothing is actuallly inserted!!
+        // need to check for error condition and respond w error msg
         insertNewAccount(db, dataToSend);
+        console.log(`any error: ${error}`);
     });
-    response.json({message: `inserted new account for: ${newAccountName}`});
+    response.json({message: `Created new account for: ${newAccountNickname}`});
     // response.send('inserted!');
 
 });
 
 // ALL ROUTES
 app.get('/', (request, response) => {
-    response.send('Hello banking Root');
+    response.send('Hello, banking API is running');
 })
 
 //put to update balance by x amount - should params go in url or POST BODY! - PB as QP are for sorting or filtering
@@ -164,7 +167,7 @@ app.put('/accounts/:id', async (request, response) => {
         useUnifiedTopology: true
     }, (error, client) => {
         console.log('connected to mongo for PUT');
-        let db = client.db('bank');
+        let db = client.db('banking');
         updateMoney(db, accountID, amount);
     })
 
@@ -180,7 +183,7 @@ app.get('/accounts', async (request, response) => {
         console.log('connected to mongo DB');
         //instead of respnding with text ok, can now respond with result of query ie json
         // response.send('Accounts');
-        let db = client.db('bank'); //name of DB in mongo
+        let db = client.db('banking'); //name of DB in mongo
         getAllAccounts(db, (documentsReturned) => {
             console.log('found some records:');
             console.log(documentsReturned);
@@ -201,7 +204,7 @@ app.get('/accounts/:id', async (request, response) => {
 
         console.log(`connected to mongo DB for query with ID: ${request.params.id}`);
         // now get details for just one account - this needs to be inside the callback block otherwise it doestn know what client.db() is!
-        let db = client.db('bank');
+        let db = client.db('banking');
         //if account not found, would be nice to show error msg, dont worry about case for Name
         getAccountByID(accountID, db, (documentsReturned) => {
             console.log(`found some records by GET and id: ${accountID}`);

@@ -1,0 +1,25 @@
+[{
+  "_id": {
+    "$oid": "5fca5c01bdd52a2ea127f317"
+  },
+  "fullname": "John Andras Jaqobis",
+  "nickname": "Johnny",
+  "location": "Onboard Lucy the Spaceship",
+  "balance": 1077
+},{
+  "_id": {
+    "$oid": "5fca5c28bdd52a2ea127f318"
+  },
+  "fullname": "Alfred Olyevich Turin",
+  "nickname": "Turin",
+  "location": "The R.A.C.",
+  "balance": 4700
+},{
+  "_id": {
+    "$oid": "5fca5c91f1c7152ec5d3023d"
+  },
+  "fullname": "Yalena Yardeen",
+  "nickname": "Dutch",
+  "location": "Onboard Lucy the Spaceship",
+  "balance": 970
+}]
