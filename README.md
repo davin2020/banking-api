@@ -13,38 +13,22 @@ RESTful Banking API with Killjoys Characters as Customers
 
 ## API Feature/Routes
 
-- Create new account (should have a name, address and balance)
-- Add money to an account
-- Wthdraw money from an account 
-- Transfer money from one account to another
 - Get all accounts
-- Get specific account by ID 
+- Create new account (should have a name, address and balance)
+- Transfer money from one account to another
+- Get specific account by ID
+- Add money to an account, or withdraw money from an account 
 
-### Scenarios & Examples using Killjoys Characters
-Killjoys is a scifi tv series about Dutch, Johnny & Davin, who are all bounty hunters in the Quad solar system.
-Their friend Pree, runs The Royale bar in Old Town, on a planet called Westerley. Turin manages The RAC, where the trio work and sends them off on missions. The currency used within the Quad is called Joy.
 
-- CREATE Davin is new to the team and needs to open an account, and add 80 credits in cash
+## Routes & Examples using Killjoys Characters
+Killjoys is a scifi tv series about Dutch, Johnny & Davin, who are all bounty hunters in the Quad solar system. Turin manages The RAC, where the trio work and sends them off on missions. The currency used within the Quad is called Joy.
 
-- Johnny lost a wager to Davin, he checks his balance and transfers 20 credits to Davin
+### /accounts
 
-- Dutch needs some info from a local monk and withdraws 50 in cash to donate to his cause
-
-- PUT Its the end of the month. Turin has to pay their salary according to their level at the RAC.
-Turin pays Dutch 1000 credits, Johnny 600 and Davin 800
-
-- The trio meetup at the Royale and its Dutch's round. She pays Pree 25 credits for drinks & snacks
-
-- Their arch nemesis hacks into the bank and checks out everyones balance 
-
-EG ROUTES from Aptitude Test
-
-**/accounts**
-
-GET
+**GET**
 - Gets all accounts
 - No request data
-- Returns array of accounts, with _id, name, address & balance: 
+- Returns array of accounts, with _id, fullname, nickname, location & balance: 
 `[
   {
   "_id": "5fca5c01bdd52a2ea127f317",
@@ -69,43 +53,40 @@ GET
   }
   ]`
 
-POST
+**POST**
 - Create new account. 
 - EG Davin is the newest member of the team so  needs to create an account & pay in 50 joy
-- Sends fullname, nickname, location & balance details needed to create a new account, via POST Body :`{"fullname":"Davin Jaqobis", "nickname":"Davin", "location":"Onboard Lucy the Spaceship", "balance":50 }`
+- Sends fullname, nickname, location & balance details needed to create a new account, via POST Body: `{"fullname":"Davin Jaqobis", "nickname":"Davin", "location":"Onboard Lucy the Spaceship", "balance":50 }`
 - Returns message when new account is created: `{"message": "Created new account for: Davin" }`
 
-PUT
+**PUT**
 - Transfers money from one account to another
-- EG Its the end of the month. Turin has to pay their salary according to their rank at the RAC.
-  Turin pays Dutch 1000 joy, Johnny 600 and Davin 800
-- Sends amount, idFrom, idTo, via POST Body:  `{"amount":1000, "idFrom":"5fca5c28bdd52a2ea127f318", "idTo":"5fca5c91f1c7152ec5d3023d" }`
-- Returns message - `{
-  "message": "Updated balance using PUT to update money 1000 for accountIDFrom 5fca5c28bdd52a2ea127f318 to accountIDTo 5fca5c91f1c7152ec5d3023d "
+- EG Its the end of the month and Turin has to pay their salary according to their rank at the RAC. He pays Dutch 1000 joy, Johnny 600 and Davin 800 joy
+- Sends amount, idFrom, idTo needed for the transfer from Turin to Johnny, via POST Body: `{"amount":1000, "idFrom":"5fca5c28bdd52a2ea127f318", "idTo":"5fca5c01bdd52a2ea127f317" }`
+- Returns message: `{
+  "message": "Updated balance using PUT to update money 600 for accountIDFrom 5fca5c28bdd52a2ea127f318 to accountIDTo 5fca5c01bdd52a2ea127f317"
   }`
 
-**/accounts/{id}**
+### /accounts/{id}
 
-GET
+**GET**
 - Gets specific account by ID
 - EG Get Dutch's account balance
-- `/accounts/5fca5c91f1c7152ec5d3023d`
-- Returns _id, name, address & balance of account
- `{
-        "_id": "5fca5c91f1c7152ec5d3023d",
-        "name": "Dutch",
-        "address": "Lucy the  Spaceship",
-        "balance": 970
-    }`
-  
+- Route in URL:`/accounts/5fca5c91f1c7152ec5d3023d`
+- Returns _id, fullname, nickname, location & balance of account: 
+ `[
+  {
+  "_id": "5fca5c91f1c7152ec5d3023d",
+  "fullname": "Yalena Yardeen",
+  "nickname": "Dutch",
+  "location": "Onboard Lucy the Spaceship",
+  "balance": 970
+  }
+  ]`
 
-PUT
+**PUT**
 - Credits or debits money to the account specified
-- Use a positive amount for a credit or a negative amount for a debit
-- Sends: `{"amount":100 }`
-- Returns: `{message: "Updated balance using PUT to update money 100  for id 5fca5c91f1c7152ec5d3023d"}`
-
-
-
-
-
+- Use a positive amount for a credit or a negative amount for a debit/withdrawal
+- EG Dutch needs some info from a local monk and withdraws 50 joy in cash to donate to his cause
+- Route in URL: `/accounts/5fca5c91f1c7152ec5d3023d` plus send amount to credit or withdraw, via POST Body: `{"amount": -50 }`
+- Returns: `{message: "Updated balance using PUT to update money -50  for id 5fca5c91f1c7152ec5d3023d"}`
