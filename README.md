@@ -44,29 +44,51 @@ EG ROUTES from Aptitude Test
 GET
 - Gets all accounts
 - No request data
-- Returns array of accounts, with _id, name, address & balance: UPDATE `[{"_id": "5fca5c28bdd52a2ea127f318", "name": "Turin", "address": "The R.A.C.", "balance": 4700},{"_id": "5fca5c91f1c7152ec5d3023d", "name": "Dutch","address": "Lucy the  Spaceship", "balance": 970}]`
+- Returns array of accounts, with _id, name, address & balance: 
+`[
+  {
+  "_id": "5fca5c01bdd52a2ea127f317",
+  "fullname": "John Andras Jaqobis",
+  "nickname": "Johnny",
+  "location": "Onboard Lucy the spaceship",
+  "balance": 1077
+  },
+  {
+  "_id": "5fca5c28bdd52a2ea127f318",
+  "fullname": "Alfred Olyevich Turin",
+  "nickname": "Turin",
+  "location": "The R.A.C.",
+  "balance": 4700
+  },
+  {
+  "_id": "5fca5c91f1c7152ec5d3023d",
+  "fullname": "Yalena Yardeen",
+  "nickname": "Dutch",
+  "location": "Onboard Lucy the Spaceship",
+  "balance": 970
+  }
+  ]`
 
 POST
 - Create new account. 
 - EG Davin is the newest member of the team so  needs to create an account & pay in 50 joy
-- Sends fullname, nickname, location & balance details needed to create a new account :`{"fullname":"Davin Jaqobis", "nickname":"Davin", "location":"Onboard Lucy the Spaceship", "balance":50 }`
+- Sends fullname, nickname, location & balance details needed to create a new account, via POST Body :`{"fullname":"Davin Jaqobis", "nickname":"Davin", "location":"Onboard Lucy the Spaceship", "balance":50 }`
 - Returns message when new account is created: `{"message": "Created new account for: Davin" }`
 
 PUT
 - Transfers money from one account to another
 - EG Its the end of the month. Turin has to pay their salary according to their rank at the RAC.
   Turin pays Dutch 1000 joy, Johnny 600 and Davin 800
-- Sends via Post Body:  `{"amount":1000, "idFrom":"5fca5c28bdd52a2ea127f318", "idTo":"5fca5c91f1c7152ec5d3023d" }`
+- Sends amount, idFrom, idTo, via POST Body:  `{"amount":1000, "idFrom":"5fca5c28bdd52a2ea127f318", "idTo":"5fca5c91f1c7152ec5d3023d" }`
 - Returns message - `{
   "message": "Updated balance using PUT to update money 1000 for accountIDFrom 5fca5c28bdd52a2ea127f318 to accountIDTo 5fca5c91f1c7152ec5d3023d "
   }`
-
-
 
 **/accounts/{id}**
 
 GET
 - Gets specific account by ID
+- EG Get Dutch's account balance
 - `/accounts/5fca5c91f1c7152ec5d3023d`
 - Returns _id, name, address & balance of account
  `{
