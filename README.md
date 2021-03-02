@@ -8,13 +8,13 @@ RESTful Banking API with Killjoys Characters as Customers
 4. If your local MongoDB needs a username & password to connect, add them to `index.js` - see lines 17-19 for example formats
 5. Create a collection called `accounts` & import data from file `banking-accounts.json`
 6. Run `nodemon index.js`
-7. Navigate to `htt://localhost:3008` in browser to test its running - you should see `'Hello, banking API is running`
+7. Navigate to `htt://localhost:3008` in a browser to test its running - you should see `Hello, banking API is running`
 8. Use Postman or similar to submit requests, using the below routes
 
 ## API Feature/Routes
 
 - Get all accounts
-- Create new account (should have a name, address and balance)
+- Create new account (should have a fullname, nickname, location and balance)
 - Transfer money from one account to another
 - Get specific account by ID
 - Add money to an account, or withdraw money from an account 
