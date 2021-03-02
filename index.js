@@ -18,21 +18,17 @@ const ObjectId = require('mongodb').ObjectId;
 // const url = "mongodb://root:password@localhost:27017"; //default port & login for Macs
 const url = "mongodb://localhost:27017"; //default port & login for Windows10
 
-// todo - 13feb2021 need to save fulname data to mongo db & adjust saving of nickname data
-// todo - what about putting mongo db in cloud?? so wehn i make demo deployable version it will work ok, btut that woul make install instructions different
-// todo - test by creating new accounts eg Pree or Gared
+// todo - 13feb2021 what about putting mongo db in cloud?? so when i make demo deployable version it will work ok, but that would make install instructions different
 
+//example data structure, before using external MongoDB
 const bankingData = [
-    {nickname: 'Turin', fullname: 'Alfred Olyevich Turin', location: 'RAC', balance: '-100'},
-    {nickname: 'Pree', fullname: 'Prima Dezz', location: 'The Royal, Westerley', balance: '23100'},
-    {nickname: 'Dutch', fullname: 'Yalena Yardeen', location: 'Lucy', balance: '700'}
+    {nickname: 'Turin', fullname: 'Alfred Olyevich Turin', location: 'RAC', balance: '23000'},
+    {nickname: 'Pree', fullname: 'Johnny Andras Jaqobis', location: 'Lucy', balance: '7100'},
+    {nickname: 'Dutch', fullname: 'Yalena Yardeen', location: 'Lucy', balance: '1200'}
 ]
 
-//GIT WIP branch - do i need to git add package-lock.json file??
-
+// TODO refactor code in this index file into separate callbacks & functions
 // CALLBACKS
-
-//FUNCTIONS
 
 
 // FUNCTIONS
@@ -58,7 +54,6 @@ let insertNewAccount = (db, dataToSend) => {
     console.log(`found insertNewAccount `);
     collection.insertOne(dataToSend); //no need for any options here, mongodb will just store json for us
 }
-
 
 //this func is used for retrieving all records from the people collection
 //first param is teh db itself
@@ -121,7 +116,6 @@ app.put('/accounts', async (request, response) => {
     })
     response.json({message: `Updated balance using PUT to update money ${amount}  for accountIDFrom ${accountIDFrom}  to accountIDTo ${accountIDTo} `});
 })
-
 
 //Requirement - use POST - add/create new account, w nickname, location, balance 0 as default
 app.post('/accounts', (request, response) => {
