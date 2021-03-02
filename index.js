@@ -1,23 +1,22 @@
 const expressPkg = require('express'); //import the express pkg
 const MongoClient = require('mongodb').MongoClient;
-//need body parser for POST requests
 const bodyParser = require('body-parser'); //RM
 const cors = require('cors');
 
 const app = expressPkg();
 const port = 3008;
 
-//need body parser for POST requests
+//need bodyParser for POST requests
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cors());
 
-//helpful to delete or get stuff by ID
+//helpful to get objects by ID, or delete them
 const ObjectId = require('mongodb').ObjectId;
 
-//where db is that we are going ot use, protocol = mongodb
-// const url = "mongodb://root:password@localhost:27017"; //default port & login for mayden mac
-const url = "mongodb://localhost:27017"; //default port & login for win10 laptop
+//Location of DB that we are going to use (connection protocol = mongodb)
+// const url = "mongodb://root:password@localhost:27017"; //default port & login for Macs
+const url = "mongodb://localhost:27017"; //default port & login for Windows10
 
 // todo - 13feb2021 need to save fulname data to mongo db & adjust saving of nickname data
 // todo - what about putting mongo db in cloud?? so wehn i make demo deployable version it will work ok, btut that woul make install instructions different
@@ -156,7 +155,7 @@ app.post('/accounts', (request, response) => {
 
 // ALL ROUTES
 app.get('/', (request, response) => {
-    response.send('Hello banking Root');
+    response.send('Hello, banking API is running');
 })
 
 //put to update balance by x amount - should params go in url or POST BODY! - PB as QP are for sorting or filtering
